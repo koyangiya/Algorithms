@@ -1,0 +1,67 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+void hanoi3(int n, int start, int cel, int pomoc)
+{
+    if (n == 0) return;
+    hanoi3(n - 1, start, pomoc, cel);
+    printf("%d -> %d\n", start, cel);
+    hanoi3(n - 1, pomoc, cel, start);
+}
+
+void hanoi4(int n, int start, int cel, vector<int> &slupki)
+{
+    if (n == 0) return;
+
+    if (n == 1)
+    {
+        printf("%d -> %d\n", start, cel);
+        return;
+    }
+
+    int k = n - (int)round(sqrt(2 * n)); 
+
+    int pomoc = -1; 
+    for (int s : slupki)
+    {
+        if (s != start && s != cel)
+        {
+            pomoc = s;
+            break;
+        }
+    }
+
+    hanoi4(k, start, pomoc, slupki);
+
+
+    int pomoc2 = -1;
+    for (int s : slupki)
+    {
+        if (s != start && s != cel && s != pomoc)
+        {
+            pomoc2 = s;
+            break;
+        }
+    }
+
+    hanoi3(n - k, start, cel, pomoc2);
+
+    hanoi4(k, pomoc, cel, slupki);
+}
+
+int main()
+{
+    int n;
+    cout << "Podaj liczbe dyskow: ";
+    cin >> n;
+    cout<<n<<endl<<4<<endl;
+
+    vector<int> slupki = {1, 2, 3, 4};
+
+    hanoi4(n, 1, 3, slupki);
+
+    return 0;
+}
