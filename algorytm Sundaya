@@ -1,0 +1,119 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+
+bool MatchesAt(string T, int p, string W)
+{
+        if( p < 0 || p > T.length() - W.length() )
+            return false;
+
+
+    for (int i = 0; i < W.length(); i++)    {
+            if(W[i] != T[p + i]) return false;
+    
+    }
+
+    return true;
+
+}
+
+vector<int> naiwny(string T, string W)
+{
+    vector<int> matches;
+
+    for (int p = 0; p <= T.length() - W.length(); p++)
+    {
+        if (MatchesAt(T, p, W))
+        {
+            matches.push_back(p);
+        }
+    }
+
+    return matches;
+}
+
+vector<int> Lastp(string W)
+{
+    vector<int> lastp(256, -1);
+
+    for (int i = 0; i < W.length(); i++)
+    {
+        lastp[W[i]] = i;
+    }
+
+    return lastp;
+
+}
+
+vector<int> Sunday(string T, string W)
+{
+    vector<int> result;
+    vector<int> lastp = Lastp(W);
+    int p = 0;
+
+    while (p <= T.length() - W.length())
+    {
+        if (MatchesAt(T, p, W))
+        {
+            result.push_back(p);
+        }
+        
+        p = p + W.length();
+
+        if(p < T.length())
+        {
+            p = p - lastp[T[p]];
+        }
+    }
+
+    return result;
+}
+
+int main()
+{
+    string T;
+    string W;
+    cout<< "Podaj string T: ";
+    cin>>T;
+    cout<< "Podaj string W: ";
+    cin>>W;
+ 
+    cout<<"Tekst: " << T << endl;
+    cout<<"Wzorzec: " << W << endl;
+    
+    vector<int> positions = naiwny(T, W);
+
+    if(positions.size() == 0)
+    {
+        cout<<"Nie znaleziono wzorca w tekscie."<< endl;
+    }
+    else
+    {
+        cout<<"Naiwny - Wzorzec na pozycjach: ";
+        for(int i = 0; i < positions.size(); i++)
+        {
+            cout<< positions[i] << " ";
+        }
+        cout<<endl;
+    }
+
+    vector<int> sunday_positions = Sunday(T, W);
+    
+    if(sunday_positions.size() == 0)
+    {
+        cout<<"Nie znaleziono wzorca w tekscie (Sunday)."<< endl;
+    }
+    else
+    {
+        cout<<"Sunday - Wzorzec na pozycjach: ";
+        for(int i = 0; i < sunday_positions.size(); i++)
+        {
+            cout<< sunday_positions[i] << " ";
+        }
+        cout<<endl;
+    }
+
+    return 0;
+}
